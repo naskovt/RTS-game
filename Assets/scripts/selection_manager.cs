@@ -25,7 +25,7 @@ public class selection_manager : MonoBehaviour {
     private RaycastHit secondRayHit;
 
     //target
-    private Vector3 pointedSpotToMove;
+    //private Vector3 pointedSpotToMove;
 
     //selection
     private GameObject[] selectedObjects;
@@ -33,7 +33,6 @@ public class selection_manager : MonoBehaviour {
     private ushort nextEmptyArrayPos = 0;
     private bool isLasoSelectionThisFrame = false;
     private float differenceBetweenClickAndDrag = 15;
-
 
     //all objects
     private GameObject[] selectableObjectsInScene
@@ -46,11 +45,11 @@ public class selection_manager : MonoBehaviour {
 
     private void Start()
     {
-        //create the selection array, that holds the currently selected objs
+        //initialize the selection array, that holds the currently selected objs
         selectedObjects = new GameObject[populationLimit];
     }
 
-    //--------CORE
+    //--------CORE--------
     void Update()
     {
         #region Click and drag selection - Draw a rect(preparation) and check for selectable objects between the two points
@@ -98,24 +97,34 @@ public class selection_manager : MonoBehaviour {
         ////////good
         #endregion
 
-        #region Single click handling for selecting and moving objects
+        #region Single left click handling for selecting objects
 
-        //if mouse bttn is pressed
-        if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1) && !isLasoSelectionThisFrame)
+        if (Input.GetMouseButtonDown(0) && !isLasoSelectionThisFrame)
         {
             RaycastHit hit;
             Ray cameraRay = cam.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(cameraRay, out hit, 1000f))
+            if (Physics.Raycast(cameraRay, out hit, 10000f))
             {
                 SelectionManagerOneClick(cameraRay, hit);
             }
+            print("one click active");
 
         }
         #endregion
-        print(isLasoSelectionThisFrame);
+
+        #region right click movement
+        if (Input.GetMouseButtonDown(1) == true && !Input.GetKey(KeyCode.LeftAlt))
+        {
+            Vector2 mousePos = Input.mousePosition;
+            Vector3 pointedSpotToMove;
+
+            pointedSpotToMove = RayHitFromMousePos(mousePos).point;
+            DecideToMoveObject(pointedSpotToMove);
+        }
+        #endregion
     }
-    //--------
+    //--------------------
 
     private void SelectObjectsBetween(Vector2 firstPointRect, Vector2 secondPointRect)
     {
@@ -178,7 +187,7 @@ public class selection_manager : MonoBehaviour {
 
 
 
-    /////checked methods, no worries!
+    ///////checked methods, no worries!
 
     private float differenceBetween2DVectors(Vector2 first, Vector2 second)
     {
@@ -213,7 +222,7 @@ public class selection_manager : MonoBehaviour {
     {
         Ray ray = cam.ScreenPointToRay(pointOnScreen);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 1000f))
+        if (Physics.Raycast(ray, out hit, 10000f))
         {
             return hit;
         }
@@ -223,7 +232,7 @@ public class selection_manager : MonoBehaviour {
         }
     }
 
-    private void DecideToMoveObject()
+    private void DecideToMoveObject(Vector3 pointedSpotToMove)
     {
         //
         if (!IsCurrentSelectionEmpty())
@@ -244,19 +253,14 @@ public class selection_manager : MonoBehaviour {
 
     private void SelectionManagerOneClick(Ray ray, RaycastHit hit)
     {
-        if (hit.transform.tag == "Player" && Input.GetMouseButtonUp(0) == true && !Input.GetKey(KeyCode.LeftControl))
+        if (hit.transform.tag == "Player" && Input.GetMouseButtonDown(0) == true && !Input.GetKey(KeyCode.LeftControl))
         {
             ClearSelection();
             AddObjectToSelection(hit.transform.gameObject);
         }
-        else if (Input.GetMouseButtonUp(0) == true && Input.GetKey(KeyCode.LeftControl) && hit.transform.tag == "Player")
+        else if (Input.GetMouseButtonDown(0) == true && Input.GetKey(KeyCode.LeftControl) && hit.transform.tag == "Player")
         {
             AddObjectToSelection(hit.transform.gameObject);
-        }
-        else if (Input.GetMouseButtonUp(1) == true)
-        {
-            pointedSpotToMove = hit.point;
-            DecideToMoveObject();
         }
         else
         {
