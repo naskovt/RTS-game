@@ -16,4 +16,16 @@ public static class extension_methods
     {
         DoForEach(a, b, a.Length);
     }
+
+    //public static string GetNamesFromObjArray(GameObject[] array, Func<string, string> b ) 
+    //{
+    //    string str = "";
+
+    //    for (int i = 0; i < array.Length; i++)
+    //    {
+    //        str += b(array[i].name);
+    //    }
+
+    //    return str;
+    //}
 }

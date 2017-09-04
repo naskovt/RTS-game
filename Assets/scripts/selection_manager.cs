@@ -28,7 +28,7 @@ public class selection_manager : MonoBehaviour {
     //private Vector3 pointedSpotToMove;
 
     //selection
-    private GameObject[] selectedObjects;
+    internal GameObject[] selectedObjects;
     private ushort populationLimit = 100;
     private ushort nextEmptyArrayPos = 0;
     private bool isLasoSelectionThisFrame = false;
@@ -108,8 +108,6 @@ public class selection_manager : MonoBehaviour {
             {
                 SelectionManagerOneClick(cameraRay, hit);
             }
-            print("one click active");
-
         }
         #endregion
 
@@ -123,6 +121,18 @@ public class selection_manager : MonoBehaviour {
             DecideToMoveObject(pointedSpotToMove);
         }
         #endregion
+
+        #region activate UI info if objects are selected
+        if (!IsCurrentSelectionEmpty())
+        {
+            ui_selection.PrintNames(selectableObjectsInScene);
+        }
+        #endregion
+
+        //PrintArray();
+        PrintArray();
+        ui_selection.PrintNames(selectedObjects);
+        //print(selectableObjectsInScene.Length);
     }
     //--------------------
 
