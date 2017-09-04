@@ -9,18 +9,18 @@ public class selection_manager : MonoBehaviour {
     public Camera cam;
     public Material selectionMaterial;
     public Material playerMaterial;
+    //public GameObject cube;
 
     /// <summary>
-    /// drawing rect part
+    /// drawing rect part with a custom texture with alpha
     /// </summary>
     public Texture textureRect;
-    private Vector3 firstPoint;
-    private Vector3 secondPoint;
+    //2D points of the mouse on the Screen
+    private Vector2 firstPoint;
+    private Vector2 secondPoint;
     private Rect rect;
 
-    //Mouse input manager Varables
-    //private bool leftClick;
-    //private bool rightClick;
+    // var for position of mouseClick in 3D space
     private RaycastHit firstRayHit;
     private RaycastHit secondRayHit;
 
@@ -30,98 +30,188 @@ public class selection_manager : MonoBehaviour {
     //selection
     private GameObject[] selectedObjects;
     private ushort populationLimit = 100;
+    private ushort nextEmptyArrayPos = 0;
+    private bool isLasoSelectionThisFrame = false;
+    private float differenceBetweenClickAndDrag = 15;
 
 
-    private ushort _nextEmptyArrayPos = 0;
-    private ushort nextEmptyArrayPos
+    //all objects
+    private GameObject[] selectableObjectsInScene
     {
         get
         {
-            return _nextEmptyArrayPos;
-        }
-
-        set
-        {
-            _nextEmptyArrayPos = value;
+            return GameObject.FindGameObjectsWithTag("Player");
         }
     }
-
-    //all objects
-    private GameObject[] selectableObjectsInScene;
 
     private void Start()
     {
+        //create the selection array, that holds the currently selected objs
         selectedObjects = new GameObject[populationLimit];
     }
 
+    //--------CORE
     void Update()
     {
         #region Click and drag selection - Draw a rect(preparation) and check for selectable objects between the two points
 
-        //
-        //save the position of the first left mouse click
+        #region save the position of the first left mouse click and the raycast hit
         if (Input.GetMouseButtonDown(0))
         {
             firstPoint = Input.mousePosition;
-            firstRayHit = RayHitFromMousePos();
+            firstRayHit = RayHitFromMousePos(firstPoint);
         }
+        #endregion
 
-        //if left mouse button is held down
+        #region if left mouse button is held down
         if (Input.GetMouseButton(0))
         {
+            #region save the second mouse click and raycast hit
             secondPoint = Input.mousePosition;
-            secondRayHit = RayHitFromMousePos();
+            secondRayHit = RayHitFromMousePos(secondPoint);
+            #endregion
 
-            if (firstRayHit.point != Vector3.zero || secondRayHit.point != Vector3.zero)
+            #region check is the lasso slecection active or the one click
+
+            if (differenceBetween2DVectors(firstPoint, secondPoint) > differenceBetweenClickAndDrag)
             {
-                SelectObjectsBetween(firstRayHit.point, secondRayHit.point);
+                isLasoSelectionThisFrame = true;
             }
-        }
-        ////////good
+            else
+            {
+                isLasoSelectionThisFrame = false;
+            }
+            #endregion
 
+            #region activate the laso selection
+            //change later, son! is the selection raycast hit gonna be outside the map?
+            if (firstRayHit.point != Vector3.zero && secondRayHit.point != Vector3.zero && isLasoSelectionThisFrame)
+            {
+                //notice passing the Vector3 x and z to Vector2 x and y
+                SelectObjectsBetween(new Vector2( firstRayHit.point.x, firstRayHit.point.z ),
+                    new Vector2(secondRayHit.point.x, secondRayHit.point.z));
+            }
+            #endregion
+
+        }
+        #endregion
+        ////////good
         #endregion
 
         #region Single click handling for selecting and moving objects
 
         //if mouse bttn is pressed
-        if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1))
+        if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1) && !isLasoSelectionThisFrame)
         {
             RaycastHit hit;
             Ray cameraRay = cam.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(cameraRay, out hit, 1000f))
             {
-                SelectionManager(cameraRay, hit);
+                SelectionManagerOneClick(cameraRay, hit);
             }
 
         }
         #endregion
-
-        //print(isCurrentSelectionEmpty());
-        //print(nextEmptyArrayPos);
-        PrintArray();
+        print(isLasoSelectionThisFrame);
     }
+    //--------
 
-    private void SelectObjectsBetween(Vector3 firstPointRect, Vector3 secondPointRect)
+    private void SelectObjectsBetween(Vector2 firstPointRect, Vector2 secondPointRect)
     {
+
         //loop through array
-        /*
-        for (int i = 0; i < populationLimit; i++)
+        for (int i = 0; i < selectableObjectsInScene.Length; i++)
         {
-            if (selectedObjects[i] != null)
+            if (selectableObjectsInScene[i] != null)
             {
-                AssingPlayerMat(selectedObjects[i]);
+                //print(IsObjectInSelectionLaso(firstPointRect, secondPointRect, selectableObjectsInScene[i]));
+
+                if (IsObjectInSelectionLaso(firstPointRect,secondPointRect, selectableObjectsInScene[i]))
+                {
+                    AddObjectToSelection(selectableObjectsInScene[i]);
+                }
+            }
+            else
+            {
+                throw new NullReferenceException("No selectable objects in scene!");
             }
         }
-        */
         //nextEmptyArrayPos = 0;
     }
 
-    private RaycastHit RayHitFromMousePos()
+    private bool IsObjectInSelectionLaso(Vector2 firstPoint, Vector2 secondPoint, GameObject obj)
     {
-        Vector2 point;
-        point = Input.mousePosition;
-        Ray ray = cam.ScreenPointToRay(secondPoint);
+        //print("XXX between:" + firstPoint.x + "   " + obj.transform.position.x + "   " + secondPoint.x + " : " +
+        //    IsFloatBetweenTwoOther(firstPoint.x, secondPoint.x, obj.transform.position.x));
+
+        //print("Y between:" + firstPoint.y + "   " + obj.transform.position.y + "   " + secondPoint.y +
+        //    IsFloatBetweenTwoOther(firstPoint.y, secondPoint.y, obj.transform.position.y));
+
+        if (IsFloatBetweenTwoOther(firstPoint.x, secondPoint.x, obj.transform.position.x)
+            && IsFloatBetweenTwoOther(firstPoint.y, secondPoint.y, obj.transform.position.z))
+        { 
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private void AddObjectToSelection(GameObject selectedObj)
+    {
+        if (!IsSameObjectSelected(selectedObj))
+        {
+            if (nextEmptyArrayPos < populationLimit)
+            {
+                selectedObjects[nextEmptyArrayPos] = selectedObj;
+                HighlightSelection(selectedObj);
+                nextEmptyArrayPos++;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("population limit reached, cannot select more than that!");
+            }
+        }
+    }
+
+
+
+    /////checked methods, no worries!
+
+    private float differenceBetween2DVectors(Vector2 first, Vector2 second)
+    {
+        //calculate the difference between radiuses of two vectors2d
+        float firstRadius = (float)(first.magnitude * Math.PI * 2);
+        float secondRadius = (float)(second.magnitude * Math.PI * 2);
+        return Math.Abs(firstRadius - secondRadius);
+    }
+
+    private bool IsFloatBetweenTwoOther(float firstFloat, float secondFloat, float value)
+    {
+        var smallerFloat = firstFloat;
+        var biggerFloat = secondFloat;
+
+        if (firstFloat > secondFloat)
+        {
+            smallerFloat = secondFloat;
+            biggerFloat = firstFloat;
+        }
+
+        if (smallerFloat <= value && value <= biggerFloat)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private RaycastHit RayHitFromMousePos(Vector2 pointOnScreen)
+    {
+        Ray ray = cam.ScreenPointToRay(pointOnScreen);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 1000f))
         {
@@ -136,7 +226,7 @@ public class selection_manager : MonoBehaviour {
     private void DecideToMoveObject()
     {
         //
-        if (!isCurrentSelectionEmpty())
+        if (!IsCurrentSelectionEmpty())
         {
             for (int i = 0; i < nextEmptyArrayPos; i++)
             {
@@ -152,18 +242,16 @@ public class selection_manager : MonoBehaviour {
         }
     }
 
-    private void SelectionManager(Ray ray, RaycastHit hit)
+    private void SelectionManagerOneClick(Ray ray, RaycastHit hit)
     {
         if (hit.transform.tag == "Player" && Input.GetMouseButtonUp(0) == true && !Input.GetKey(KeyCode.LeftControl))
         {
             ClearSelection();
-            GameObject hitObject = hit.transform.gameObject;
-            AddObjectToSelection(ref hitObject);
+            AddObjectToSelection(hit.transform.gameObject);
         }
-        else if (Input.GetMouseButtonUp(0) == true && Input.GetKey(KeyCode.LeftControl) && !isSameObjectSelected(hit.transform.gameObject) && hit.transform.tag == "Player")
+        else if (Input.GetMouseButtonUp(0) == true && Input.GetKey(KeyCode.LeftControl) && hit.transform.tag == "Player")
         {
-            GameObject hitObject = hit.transform.gameObject;
-            AddObjectToSelection(ref hitObject);
+            AddObjectToSelection(hit.transform.gameObject);
         }
         else if (Input.GetMouseButtonUp(1) == true)
         {
@@ -176,39 +264,7 @@ public class selection_manager : MonoBehaviour {
         }
     }
 
-    private void AddObjectToSelection(ref GameObject selectedObj)
-    {
-        if (nextEmptyArrayPos < populationLimit)
-        {
-            selectedObjects[nextEmptyArrayPos] = selectedObj;
-            print(selectedObjects[nextEmptyArrayPos] + " --- " + selectedObj);
-            HighlightSelection(selectedObj);
-            nextEmptyArrayPos++;
-        }
-        else
-        {
-            throw new ArgumentOutOfRangeException("population limit reached, cannot select more than that!");
-        }
-    }
-
-    private void PrintArray()
-    {
-        string oneLineArray = "";
-        for (int i = 0; i < populationLimit; i++)
-        {
-            if (selectedObjects[i] != null)
-            {
-                oneLineArray += "1";
-            }
-            else
-            {
-                oneLineArray += "0";
-            }
-        }
-        print(oneLineArray);
-    }
-
-    private bool isSameObjectSelected(GameObject targetSelection)
+    private bool IsSameObjectSelected(GameObject targetSelection)
     {
         for (int i = 0; i < nextEmptyArrayPos; i++)
         {
@@ -227,18 +283,7 @@ public class selection_manager : MonoBehaviour {
         selectedObjects = new GameObject[populationLimit];
     }
 
-    private void OnGUI()
-    {
-        if (Input.GetMouseButton(0))
-        {
-            //create rect with opposite Y
-            rect = Rect.MinMaxRect(firstPoint.x, Screen.height - firstPoint.y, secondPoint.x, Screen.height - secondPoint.y);
-
-            GUI.DrawTexture(rect, textureRect);
-        }
-    }
-
-    private bool isCurrentSelectionEmpty()
+    private bool IsCurrentSelectionEmpty()
     {
         for (int i = 0; i < populationLimit; i++)
         {
@@ -266,16 +311,45 @@ public class selection_manager : MonoBehaviour {
         obj.GetComponent<Renderer>().material = playerMaterial;
     }
 
-    //private GameObject[] ObjectsInSelectionRange()
-    //{
-
-    //}
-
-    //////////////////test debug
-    private void FixedUpdate()
+    private void TestPrintAllSelObjects()
     {
-        //Debug.Log(pointedSpotToMove);
+        string oneLine = "";
+
+        foreach (var item in selectableObjectsInScene)
+        {
+            oneLine += item.name;
+        }
+        print(oneLine);
     }
-    ///////////////////////////
+
+    private void PrintArray()
+    {
+        string oneLineArray = "";
+        for (int i = 0; i < populationLimit; i++)
+        {
+            if (selectedObjects[i] != null)
+            {
+                oneLineArray += "1";
+            }
+            else
+            {
+                oneLineArray += "0";
+            }
+        }
+        print(oneLineArray);
+    }
+
+    private void OnGUI()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            //print(firstPoint + " , " + secondPoint);
+                //create rect with opposite Y
+                rect = Rect.MinMaxRect(firstPoint.x, Screen.height - firstPoint.y, secondPoint.x, Screen.height - secondPoint.y);
+
+                GUI.DrawTexture(rect, textureRect);
+        }
+    }
     
+    ///////////////////////////
 }
