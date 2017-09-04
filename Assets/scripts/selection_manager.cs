@@ -9,67 +9,85 @@ public class selection_manager : MonoBehaviour {
     public Camera cam;
     public Material selectionMaterial;
     public Material playerMaterial;
-    public Texture texture;
+
+    /// <summary>
+    /// drawing rect part
+    /// </summary>
+    public Texture textureRect;
+    private Vector3 firstPoint;
+    private Vector3 secondPoint;
+    private Rect rect;
 
     //Mouse input manager Varables
-    private bool leftClick;
-    private bool rightClick;
+    //private bool leftClick;
+    //private bool rightClick;
+    private RaycastHit firstRayHit;
+    private RaycastHit secondRayHit;
 
     //target
-    private Vector3 targetPoint;
+    private Vector3 pointedSpotToMove;
 
     //selection
-    private List<GameObject> selectedObject;
+    private GameObject[] selectedObjects;
+    private ushort populationLimit = 100;
 
-    private Color color;
 
-    private Rect rect;
+    private ushort _nextEmptyArrayPos = 0;
+    private ushort nextEmptyArrayPos
+    {
+        get
+        {
+            return _nextEmptyArrayPos;
+        }
+
+        set
+        {
+            _nextEmptyArrayPos = value;
+        }
+    }
+
+    //all objects
+    private GameObject[] selectableObjectsInScene;
 
     private void Start()
     {
-        selectedObject = new List<GameObject>();
-        color = new Color(0, 0, 1, 0.5f);
+        selectedObjects = new GameObject[populationLimit];
     }
 
     void Update()
     {
+        #region Click and drag selection - Draw a rect(preparation) and check for selectable objects between the two points
 
-        //get mouse click coordinates in 3D
-        //fire a raycast from the main camera
+        //
+        //save the position of the first left mouse click
         if (Input.GetMouseButtonDown(0))
         {
-            Vector3 firstPointRect;
-            Vector3 secondPointRect;
+            firstPoint = Input.mousePosition;
+            firstRayHit = RayHitFromMousePos();
+        }
 
-            RaycastHit firstHit;
-            RaycastHit secondHit;
-            Ray firstCameraRay = cam.ScreenPointToRay(Input.mousePosition);
-            Ray secondCameraRay = cam.ScreenPointToRay(Input.mousePosition);
+        //if left mouse button is held down
+        if (Input.GetMouseButton(0))
+        {
+            secondPoint = Input.mousePosition;
+            secondRayHit = RayHitFromMousePos();
 
-            if (Physics.Raycast(firstCameraRay, out firstHit, 1000f) && Physics.Raycast(secondCameraRay, out secondHit, 1000f))
+            if (firstRayHit.point != Vector3.zero || secondRayHit.point != Vector3.zero)
             {
-                firstPointRect = firstHit.point;
-                secondPointRect = secondHit.point;
-
-                Draw2DRect(firstPointRect, secondPointRect);
-
-                CheckForSelectableObjectsBetween(firstPointRect, secondPointRect);
-
+                SelectObjectsBetween(firstRayHit.point, secondRayHit.point);
             }
-
-
         }
-        else if(Input.GetMouseButtonUp(0))
+        ////////good
+
+        #endregion
+
+        #region Single click handling for selecting and moving objects
+
+        //if mouse bttn is pressed
+        if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1))
         {
-
-        }
-
-        if (Input.GetMouseButtonUp(0) | Input.GetMouseButtonUp(1))
-        {
-
             RaycastHit hit;
             Ray cameraRay = cam.ScreenPointToRay(Input.mousePosition);
-
 
             if (Physics.Raycast(cameraRay, out hit, 1000f))
             {
@@ -77,97 +95,159 @@ public class selection_manager : MonoBehaviour {
             }
 
         }
+        #endregion
+
+        //print(isCurrentSelectionEmpty());
+        //print(nextEmptyArrayPos);
+        PrintArray();
     }
 
-    private void CheckForSelectableObjectsBetween(Vector3 firstPointRect, Vector3 secondPointRect)
+    private void SelectObjectsBetween(Vector3 firstPointRect, Vector3 secondPointRect)
     {
-        
+        //loop through array
+        /*
+        for (int i = 0; i < populationLimit; i++)
+        {
+            if (selectedObjects[i] != null)
+            {
+                AssingPlayerMat(selectedObjects[i]);
+            }
+        }
+        */
+        //nextEmptyArrayPos = 0;
     }
 
-    private void Draw2DRect(Vector3 firstPointRect, Vector3 secondPointRect)
+    private RaycastHit RayHitFromMousePos()
     {
-        Vector2 size;
-
-        size = new Vector2(secondPointRect.x - firstPointRect.x, secondPointRect.y - firstPointRect.y);
-
-        rect = new Rect(firstPointRect, size);
-        //print("drawww");
+        Vector2 point;
+        point = Input.mousePosition;
+        Ray ray = cam.ScreenPointToRay(secondPoint);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 1000f))
+        {
+            return hit;
+        }
+        else
+        {
+            return new RaycastHit();
+        }
     }
-
-    //private void OnGUI(Rect rect)
-    //{
-    //    //GUI.Box(rect, texture);
-    //}
 
     private void DecideToMoveObject()
     {
-        if (targetPoint != Vector3.zero)
+        //
+        if (!isCurrentSelectionEmpty())
         {
-            foreach (var obj in selectedObject)
+            for (int i = 0; i < nextEmptyArrayPos; i++)
             {
-                obj.GetComponent<movement>().moveSelectedObjectToPoint(targetPoint);
+                if (selectedObjects[i] != null)
+                {
+                    selectedObjects[i].GetComponent<movement>().moveSelectedObjectToPoint(pointedSpotToMove);
+                }
             }
         }
-    }
-
-    private bool isTargetExisting()
-    {
-        if (true)
+        else
         {
-
+            pointedSpotToMove = Vector3.zero;
         }
-
-        return false;
     }
 
     private void SelectionManager(Ray ray, RaycastHit hit)
     {
-
-        if (selectedObject.Count == 0)
+        if (hit.transform.tag == "Player" && Input.GetMouseButtonUp(0) == true && !Input.GetKey(KeyCode.LeftControl))
         {
-            if (hit.transform.tag == "Player" && Input.GetMouseButtonUp(0) == true)
-            {
-                selectedObject.Add(hit.transform.gameObject);
-                HighlightSelection(hit.transform.gameObject);
-            }
-            else
-            {
-                DehighlightSelection();
-                selectedObject.Clear();
-            }
+            ClearSelection();
+            GameObject hitObject = hit.transform.gameObject;
+            AddObjectToSelection(ref hitObject);
+        }
+        else if (Input.GetMouseButtonUp(0) == true && Input.GetKey(KeyCode.LeftControl) && !isSameObjectSelected(hit.transform.gameObject) && hit.transform.tag == "Player")
+        {
+            GameObject hitObject = hit.transform.gameObject;
+            AddObjectToSelection(ref hitObject);
+        }
+        else if (Input.GetMouseButtonUp(1) == true)
+        {
+            pointedSpotToMove = hit.point;
+            DecideToMoveObject();
         }
         else
         {
-            if (Input.GetMouseButtonUp(0) == true && !isSameObjectSelected( hit.transform.gameObject ) && hit.transform.tag == "Player")
-            {
-                selectedObject.Add(hit.transform.gameObject);
-                HighlightSelection(hit.transform.gameObject);
-            }
-            else if (Input.GetMouseButtonUp(1) == true)
-            {
-                targetPoint = hit.point;
-                DecideToMove();
-            }
-            else
-            {
-                DehighlightSelection();
-                selectedObject.Clear();
-            }
-
+            ClearSelection();
         }
     }
 
-    private void DecideToMove()
+    private void AddObjectToSelection(ref GameObject selectedObj)
     {
-        //check if we have a target(destination) to move object to 
-        if (selectedObject.Count == 0)
+        if (nextEmptyArrayPos < populationLimit)
         {
-            targetPoint = Vector3.zero;
+            selectedObjects[nextEmptyArrayPos] = selectedObj;
+            print(selectedObjects[nextEmptyArrayPos] + " --- " + selectedObj);
+            HighlightSelection(selectedObj);
+            nextEmptyArrayPos++;
         }
         else
         {
-            DecideToMoveObject();
+            throw new ArgumentOutOfRangeException("population limit reached, cannot select more than that!");
         }
+    }
+
+    private void PrintArray()
+    {
+        string oneLineArray = "";
+        for (int i = 0; i < populationLimit; i++)
+        {
+            if (selectedObjects[i] != null)
+            {
+                oneLineArray += "1";
+            }
+            else
+            {
+                oneLineArray += "0";
+            }
+        }
+        print(oneLineArray);
+    }
+
+    private bool isSameObjectSelected(GameObject targetSelection)
+    {
+        for (int i = 0; i < nextEmptyArrayPos; i++)
+        {
+            if (selectedObjects[i] != null && selectedObjects[i] == targetSelection)
+            {
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private void ClearSelection()
+    {
+        //first dehighlight, cause the fucn uses the selected obj!
+        DehighlightSelection();
+        selectedObjects = new GameObject[populationLimit];
+    }
+
+    private void OnGUI()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            //create rect with opposite Y
+            rect = Rect.MinMaxRect(firstPoint.x, Screen.height - firstPoint.y, secondPoint.x, Screen.height - secondPoint.y);
+
+            GUI.DrawTexture(rect, textureRect);
+        }
+    }
+
+    private bool isCurrentSelectionEmpty()
+    {
+        for (int i = 0; i < populationLimit; i++)
+        {
+            if (selectedObjects[i] != null)
+            {
+                return false;
+            }
+        }
+            return true;
     }
 
     private void HighlightSelection(GameObject obj)
@@ -177,42 +257,25 @@ public class selection_manager : MonoBehaviour {
 
     private void DehighlightSelection()
     {
-
-        foreach (var obj in selectedObject)
-        {
-                obj.GetComponent<Renderer>().material = playerMaterial;
-        }
-
+        selectedObjects.DoForEach(AssingPlayerMat, nextEmptyArrayPos);
+        nextEmptyArrayPos = 0;
     }
 
-    private bool isSameObjectSelected(GameObject targetSelection)
+    private void AssingPlayerMat(GameObject obj)
     {
-
-        foreach (var selected in selectedObject)
-        {
-            if (selected.Equals(targetSelection))
-            {
-                return true;
-            }
-        }
-
-        return false;
+        obj.GetComponent<Renderer>().material = playerMaterial;
     }
 
+    //private GameObject[] ObjectsInSelectionRange()
+    //{
+
+    //}
 
     //////////////////test debug
     private void FixedUpdate()
     {
-        //Debug.Log(targetPoint);
-
-
-        //move object
-
-
+        //Debug.Log(pointedSpotToMove);
     }
     ///////////////////////////
-    
-    //
-    //
     
 }
