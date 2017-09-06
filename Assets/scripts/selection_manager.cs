@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class selection_manager : MonoBehaviour {
+public class selection_manager : MonoBehaviour
+{
 
     public Camera cam;
     public Material selectionMaterial;
@@ -23,6 +24,7 @@ public class selection_manager : MonoBehaviour {
     // var for position of mouseClick in 3D space
     private RaycastHit firstRayHit;
     private RaycastHit secondRayHit;
+    private int rayLayer = 1 << 8;
 
     //target
     //private Vector3 pointedSpotToMove;
@@ -87,7 +89,7 @@ public class selection_manager : MonoBehaviour {
             if (firstRayHit.point != Vector3.zero && secondRayHit.point != Vector3.zero && isLasoSelectionThisFrame)
             {
                 //notice passing the Vector3 x and z to Vector2 x and y
-                SelectObjectsBetween(new Vector2( firstRayHit.point.x, firstRayHit.point.z ),
+                SelectObjectsBetween(new Vector2(firstRayHit.point.x, firstRayHit.point.z),
                     new Vector2(secondRayHit.point.x, secondRayHit.point.z));
             }
             #endregion
@@ -104,7 +106,7 @@ public class selection_manager : MonoBehaviour {
             RaycastHit hit;
             Ray cameraRay = cam.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(cameraRay, out hit, 10000f))
+            if (Physics.Raycast(cameraRay, out hit, 10000f, rayLayer))
             {
                 SelectionManagerOneClick(cameraRay, hit);
             }
@@ -122,16 +124,15 @@ public class selection_manager : MonoBehaviour {
         }
         #endregion
 
-        #region activate UI info if objects are selected
-        if (!IsCurrentSelectionEmpty())
-        {
-            ui_selection.PrintNames(selectableObjectsInScene);
-        }
-        #endregion
+        //#region activate UI info if objects are selected
+        //if (!IsCurrentSelectionEmpty())
+        //{
+        //    ui_selection.PrintNames(selectableObjectsInScene);
+        //}
+        //#endregion
 
         //PrintArray();
-        PrintArray();
-        ui_selection.PrintNames(selectedObjects);
+        //ui_selection.PrintNames(selectedObjects);
         //print(selectableObjectsInScene.Length);
     }
     //--------------------
@@ -146,7 +147,7 @@ public class selection_manager : MonoBehaviour {
             {
                 //print(IsObjectInSelectionLaso(firstPointRect, secondPointRect, selectableObjectsInScene[i]));
 
-                if (IsObjectInSelectionLaso(firstPointRect,secondPointRect, selectableObjectsInScene[i]))
+                if (IsObjectInSelectionLaso(firstPointRect, secondPointRect, selectableObjectsInScene[i]))
                 {
                     AddObjectToSelection(selectableObjectsInScene[i]);
                 }
@@ -169,7 +170,7 @@ public class selection_manager : MonoBehaviour {
 
         if (IsFloatBetweenTwoOther(firstPoint.x, secondPoint.x, obj.transform.position.x)
             && IsFloatBetweenTwoOther(firstPoint.y, secondPoint.y, obj.transform.position.z))
-        { 
+        {
             return true;
         }
         else
@@ -232,7 +233,7 @@ public class selection_manager : MonoBehaviour {
     {
         Ray ray = cam.ScreenPointToRay(pointOnScreen);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 10000f))
+        if (Physics.Raycast(ray, out hit, 10000f, rayLayer))
         {
             return hit;
         }
@@ -284,7 +285,7 @@ public class selection_manager : MonoBehaviour {
         {
             if (selectedObjects[i] != null && selectedObjects[i] == targetSelection)
             {
-                    return true;
+                return true;
             }
         }
         return false;
@@ -295,6 +296,7 @@ public class selection_manager : MonoBehaviour {
         //first dehighlight, cause the fucn uses the selected obj!
         DehighlightSelection();
         selectedObjects = new GameObject[populationLimit];
+        nextEmptyArrayPos = 0;
     }
 
     private bool IsCurrentSelectionEmpty()
@@ -306,7 +308,7 @@ public class selection_manager : MonoBehaviour {
                 return false;
             }
         }
-            return true;
+        return true;
     }
 
     private void HighlightSelection(GameObject obj)
@@ -343,7 +345,8 @@ public class selection_manager : MonoBehaviour {
         {
             if (selectedObjects[i] != null)
             {
-                oneLineArray += "1";
+                oneLineArray += selectedObjects[i].name;
+
             }
             else
             {
@@ -358,12 +361,12 @@ public class selection_manager : MonoBehaviour {
         if (Input.GetMouseButton(0))
         {
             //print(firstPoint + " , " + secondPoint);
-                //create rect with opposite Y
-                rect = Rect.MinMaxRect(firstPoint.x, Screen.height - firstPoint.y, secondPoint.x, Screen.height - secondPoint.y);
+            //create rect with opposite Y
+            rect = Rect.MinMaxRect(firstPoint.x, Screen.height - firstPoint.y, secondPoint.x, Screen.height - secondPoint.y);
 
-                GUI.DrawTexture(rect, textureRect);
+            GUI.DrawTexture(rect, textureRect);
         }
     }
-    
+
     ///////////////////////////
 }
