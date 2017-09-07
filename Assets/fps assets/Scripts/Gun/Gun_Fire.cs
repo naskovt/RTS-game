@@ -11,23 +11,20 @@ public class Gun_Fire : MonoBehaviour {
     private GameObject sleeveSpawnPoint;
     private GameObject bulletSpawnPoint;
     private float fireCount;
-    private byte isShooting;
+    private movement playerMovementScript;
 
 	void Start () {
         bulletSpawnPoint = Custom.findChildWithTag(gameObject, "bulletSpawn");
         sleeveSpawnPoint = Custom.findChildWithTag(gameObject, "sleeveSpawn");
+        playerMovementScript = GetComponentInParent<movement>();
     }
 
-    void Update () {
 
-
-        isShooting = (byte)(Input.GetAxisRaw("Fire1"));
-    }
-
-    private void FixedUpdate()
+    private void Update()
     {
 
-        if (isShooting != 0)
+        //fire!!!
+        if (playerMovementScript.isShooting)
         {
             if (fireCount == fireRateLimit || fireCount == 0)
             {

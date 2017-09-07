@@ -15,7 +15,7 @@ public class enemy_movement : MonoBehaviour
     private float timeLapsed;
     private NavMeshAgent navAgent;
     private Rigidbody rb;
-    private enemy_sense enemySense;
+    private unit_sense unitSense;
 
     public float movingSpeed = 1;
     public float rotateMovingSpeed = 1;
@@ -27,16 +27,15 @@ public class enemy_movement : MonoBehaviour
     {
         navAgent = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
-        enemySense = GetComponentInChildren<enemy_sense>();
-
+        unitSense = GetComponentInChildren<unit_sense>();
     }
 
     void Update()
     {
         //if target in range ---> go and attack it
-        if (enemySense.isPlayerInRange)
+        if (unitSense.isEnemyInRange)
         {
-            targetDirection = enemySense.playerPosition;
+            targetDirection = unitSense.enemyPosition;
         }
         //else go and attack the main base
         else
@@ -44,15 +43,7 @@ public class enemy_movement : MonoBehaviour
             targetDirection = mainPlayerBase.transform.position;
         }
 
-
-        aiDestination.transform.position = targetDirection;
-
-    }
-
-    void FixedUpdate()
-    {
         timeLapsed += Time.deltaTime;
-
 
         #region Move the enemy towards the player
 

@@ -17,13 +17,14 @@ public class unit_prop : MonoBehaviour {
     private resources gatheredType = 0;
 
     //enemy
-    private bool isEnemyInRange = false;
+    private unit_sense sense;
 
 
     // Use this for initialization
     void Start () {
-		
-	}
+        sense = GetComponent<unit_sense>();
+        
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -33,15 +34,11 @@ public class unit_prop : MonoBehaviour {
             gather_resources.StartGathering(gatheredType);
         }
 
-        if (isEnemyInRange)
-        {
+        //if (sense.isEnemyInRange)
+        //{
 
-        }
+        //}
 
-        if (health <= 0)
-        {
-            PlayerDies();
-        }
 	}
 
 
@@ -65,21 +62,14 @@ public class unit_prop : MonoBehaviour {
         this.health -= damage;
     }
 
-    private void PlayerDies()
-    {
-        resources_manager.population += 1;
-        Destroy(this.gameObject);
-    }
-
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.tag == "resource")
         {
             gatheredType = collision.collider.gameObject.GetComponent<resource_info>().type;
         }
-        else if (collision.collider.tag == "enemy")
+        else if (collision.collider.tag == "building")
         {
-            isEnemyInRange = true;
         }
     }
 
@@ -89,9 +79,8 @@ public class unit_prop : MonoBehaviour {
         {
             gatheredType = resources.none;
         }
-        else if (collision.collider.tag == "enemy")
+        else if (collision.collider.tag == "building")
         {
-            isEnemyInRange = false;
         }
     }
 
