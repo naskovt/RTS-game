@@ -36,7 +36,7 @@ public class unit_sense : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == enemyTagToAttack)
+        if (other.tag == enemyTagToAttack && other.gameObject.activeInHierarchy)
         {
             //once a player enters the radius(sight) set it to true
             isEnemyInRange = true;
@@ -47,7 +47,7 @@ public class unit_sense : MonoBehaviour {
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag == enemyTagToAttack)
+        if (other.tag == enemyTagToAttack && other.gameObject.activeInHierarchy)
         {
             array_manager.removeObjFromArray(other.transform.parent.gameObject, targetsInRangeTest);
 

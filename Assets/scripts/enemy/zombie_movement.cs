@@ -98,7 +98,7 @@ public class zombie_movement : MonoBehaviour {
     private void Animate()
     {
         animator.SetBool("Moving", isMoving);
-        print(isMoving);
+        //print(isMoving);
     }
 
 

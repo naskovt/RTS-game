@@ -7,23 +7,23 @@ using UnityEngine.UI;
 
 public class unit_prop : MonoBehaviour {
 
-    private float health = 100;
-    private float attack = 5;
-    private units_type type = units_type.peasant;
     public Image greenBar;
+
+    private float health = 100;
+    private units_type type = units_type.peasant;
 
     //resources
     private gather_resources gatheringAgent;
     private resources gatheredType = 0;
 
     //enemy
+    private string playerTagsInGame = "Player";
     private unit_sense sense;
 
 
     // Use this for initialization
     void Start () {
         sense = GetComponent<unit_sense>();
-        
     }
 	
 	// Update is called once per frame
@@ -33,34 +33,47 @@ public class unit_prop : MonoBehaviour {
         {
             gather_resources.StartGathering(gatheredType);
         }
-
-        //if (sense.isEnemyInRange)
-        //{
-
-        //}
-
 	}
 
-
-    private void UpgradeAttack(float upgrade)
+    internal void modulateGUIBar()
     {
-        this.attack += upgrade;
+        float healthPercent = health / 100f;
+
+        if (healthPercent >= 0)
+        {
+            greenBar.rectTransform.localScale = new Vector3(healthPercent, 1, 1);
+        }
     }
 
-    private void UpgradeHealth(float upgrade)
+    internal void UpgradeHealth(float upgrade)
     {
         this.health += upgrade;
+        modulateGUIBar();
     }
 
-    private void Attack(GameObject enemy)
+    internal void TakeDamage(float damage)
     {
-
+        if (health <= 0)
+        {
+            UnitDies();
+        }
+        else
+        {
+            this.health -= damage;
+            modulateGUIBar();
+        }
     }
 
-    private void TakeDamage(float damage)
+    internal void UnitDies()
     {
-        this.health -= damage;
+        //if (transform.tag == playerTagsInGame && selection_manager.IsSameObjectSelected(gameObject))
+        //{
+        //    print("selected object dies");
+        //}
+        gameObject.SetActive(false);
     }
+
+    /// Collision listening functions
 
     private void OnCollisionEnter(Collision collision)
     {

@@ -19,6 +19,7 @@ public class movement : MonoBehaviour {
     private string enemyTagToAttack = "enemy";
     private Transform eyesTransform;
     private GameObject gun;
+    private float unitWidth = 2;
 
     private void Start()
     {
@@ -31,18 +32,9 @@ public class movement : MonoBehaviour {
 
     private void Update()
     {
-        #region movement
-
-        if (!isTargetOnPlace)
-        {
-            navAgent.isStopped = false;
-            navAgent.SetDestination(targetPointToMove);
-        }
-        #endregion
 
         #region attack
-
-        //IsEnemyVisibleToPlayer();
+        //if()
 
         if (unitSense.isEnemyInRange)
         {
@@ -54,28 +46,45 @@ public class movement : MonoBehaviour {
             if (IsEnemyVisibleToPlayer())
             {
                 RotateUnitToAimEnemy();
-                //RotateGunToAimEnemy();
                 isShooting = true;
-                print("yessssssssssssssssssssss");
+            }
+            else
+            {
+                UnitForgetTheTarget();
             }
         }
         else
         {
-            print("not in range-------------------------");
-            isShooting = false;
+            UnitForgetTheTarget();
+
+            navAgent.updateRotation = true;
         }
         #endregion
 
-        //if player is on his place
-        if (isTargetOnPlace)
+
+        #region movement
+        //if player is not on his place
+
+        if (!isTargetOnPlace)
         {
-            navAgent.isStopped = true;
+            navAgent.enabled = true;
+            navAgent.SetDestination(targetPointToMove);
         }
         else
         {
-            navAgent.isStopped = false;
+            navAgent.enabled = false;
         }
 
+        #endregion
+    }
+
+    private void deviationDestination()
+    {
+        //if selected object is more than one
+        if (!array_manager.IsArrayWithOneObj(selection_manager.selectedObjects))
+        {
+
+        }
     }
 
     //the eyes of the player, can he see the enemy?
@@ -98,25 +107,28 @@ public class movement : MonoBehaviour {
 
     private void RotateUnitToAimEnemy()
     {
-        transform.LookAt(targetPointToAttack);
+        navAgent.updateRotation = false;
+        transform.LookAt(new Vector3 (targetPointToAttack.x, transform.position.y, targetPointToAttack.z));
     }
 
-    //private void RotateGunToAimEnemy()
-    //{
-    //    gun.transform.LookAt(targetPointToAttack);
-    //    print(777);
-    //}
 
-    public void moveSelectedObjectToPoint(Vector3 targetPointToMove)
+    internal void moveSelectedObjectToPoint(Vector3 targetPointToMove)
     {
         //Decide to move or not - if object is far
         if (Vector3.Distance( transform.position, targetPointToMove) > minDeltaDistanceToMove)
         {
+
             this.targetPointToMove = targetPointToMove;
 
             isTargetOnPlace = false;
         }
 
+    }
+
+    private void UnitForgetTheTarget()
+    {
+        isShooting = false;
+        targetPointToAttack = Vector3.zero;
     }
 
 }

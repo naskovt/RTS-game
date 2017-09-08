@@ -4,20 +4,22 @@ using UnityEngine;
 
 public class Bullet_Movement : MonoBehaviour {
 
-    public float bulletExplosiveSpeed = 8f;
+    public float bulletExplosiveSpeed = 15f;
     private float timePassed;
     private Rigidbody rb;
     private RaycastHit hit;
 
     void Start () {
 
-        rb = GetComponent<Rigidbody>();
+        //rb = GetComponent<Rigidbody>();
 
-        rb.AddForce(transform.up * bulletExplosiveSpeed, ForceMode.Impulse);
+        //rb.AddForce(transform.up * bulletExplosiveSpeed, ForceMode.Impulse);
 
     }
 
     void FixedUpdate () {
+
+        transform.Translate(Vector3.up * Time.deltaTime * bulletExplosiveSpeed);
 
         timePassed += Time.deltaTime;
 

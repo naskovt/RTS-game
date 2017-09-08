@@ -108,4 +108,38 @@ public class array_manager : MonoBehaviour {
         }
         print(oneLineArray);
     }
+
+    //is array with one element inside
+    public static bool IsArrayWithOneObj(GameObject[] arr)
+    {
+        byte count = 0;
+        for (int i = 0; i < arr.Length; i++)
+        {
+            if (arr[i] != null)
+            {
+                count++;
+                if (count > 1)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    //return number of elements in array
+    public static int objectsCountInArray(GameObject[] arr)
+    {
+        int count = 0;
+        for (int i = 0; i < arr.Length; i++)
+        {
+            if (arr[i] != null)
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+
 }
+
