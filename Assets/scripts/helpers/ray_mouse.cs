@@ -47,4 +47,18 @@ public class ray_mouse : MonoBehaviour {
         }
     }
 
+    internal static RaycastHit RayHitFromMouseAllLayers(Vector2 pointOnScreen, LayerMask layerMask)
+    {
+        Ray ray = cam.ScreenPointToRay(pointOnScreen);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, 10000f, layerMask))
+        {
+            return hit;
+        }
+        else
+        {
+            return new RaycastHit();
+        }
+    }
 }

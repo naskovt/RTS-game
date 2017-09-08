@@ -2,46 +2,6 @@
 
 public static class Custom{
 
-    //public static T findChildWithTag <T>(this GameObject parent, string searchedTag)where T:Component
-    //{
-    //    T[] children;
-
-    //    children = parent.GetComponentsInChildren<T>();
-
-    //    foreach (var child in children)
-    //    {
-    //        if (child.tag == searchedTag)
-    //        {
-    //            return child;
-    //        }
-    //    }
-
-    //    throw new MissingComponentException(
-    //        "Component in parent: \"" + parent.name + "\" with tag: \"" + searchedTag + "\" not found!");
-    //}
-
-    public static void SayHello()
-    {
-        MonoBehaviour.print("Hello");
-    }
-
-    //public static GameObject findChildWithTag(GameObject parent, string searchedTag)
-    //{
-    //    GameObject[] children;
-
-    //    children = parent.GetComponentsInParent<GameObject>();
-
-    //    foreach (var child in children)
-    //    {
-    //        if (child.tag == searchedTag)
-    //        {
-    //            return child;
-    //        }
-    //    }
-
-    //    throw new MissingComponentException(
-    //        "Component in parent: \"" + parent.name + "\" with tag: \"" + searchedTag + "\" not found!");
-    //}
 
     public static GameObject findChildWithTag(GameObject parent, string searchedTag)
     {
@@ -61,4 +21,9 @@ public static class Custom{
             "Component in parent: \"" + parent.name + "\" with tag: \"" + searchedTag + "\" not found!");
     }
 
+
+    public static bool DoesObjectHaveComponent<T>(this GameObject flag) where T : Component
+    {
+        return flag.GetComponent<T>() != null;
+    }
 }

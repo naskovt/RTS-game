@@ -32,11 +32,13 @@ public class movement : MonoBehaviour {
 
     private void Update()
     {
+        if (true)
+        {
 
         #region attack
-        //if()
 
-        if (unitSense.isEnemyInRange)
+
+            if (unitSense.isEnemyInRange)
         {
             targetPointToAttack = unitSense.enemyPosition;
 
@@ -61,6 +63,7 @@ public class movement : MonoBehaviour {
         }
         #endregion
 
+        }
 
         #region movement
         //if player is not on his place

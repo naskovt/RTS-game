@@ -59,7 +59,7 @@ public class build_wall : MonoBehaviour {
             }
         }
 
-        selection_manager.PrintArray();
+        //selection_manager.PrintArray();
     }
 
     public void BuildWall()

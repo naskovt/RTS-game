@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 public class ui_selection : MonoBehaviour {
 
+    /// <summary>
+    /// check wich object is currently selected and pop up the UI for it
+    /// </summary>
 
     //private Button button;
 
@@ -17,9 +20,13 @@ public class ui_selection : MonoBehaviour {
 
     private void Update()
     {
+        //if one object is selected
         if (array_manager.IsArrayWithOneObj(selection_manager.selectedObjects))
         {
+            if (selection_manager.selectedObjects[0].tag == global_const.playersTag)
+            {
 
+            }
         }
     }
 

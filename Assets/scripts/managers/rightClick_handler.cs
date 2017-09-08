@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class rightClick_handler : MonoBehaviour {
 
-    internal static bool isRightClickOnResource = false;
-    internal static bool isRightClickOnEnemy = false;
+    /// <summary>
+    /// tells if the right click button of the mouse is for gathering resources or finishing constructing a wall
+    /// </summary>
+
+    internal static selection_type rightClickCommand = selection_type.none;
 
     // Use this for initialization
     void Start () {
@@ -16,21 +19,27 @@ public class rightClick_handler : MonoBehaviour {
 	void Update () {
 
 
-
+        //right clicked
         if (Input.GetMouseButtonDown(1) == true)
         {
-            isRightClickOnResource = false;
-            isRightClickOnEnemy = false;
+            GameObject pointedObject = ray_mouse.RayHitFromMouseAllLayers(Input.mousePosition, 1 << 8).transform.gameObject;
 
-            if (ray_mouse.secondRayHit.transform.tag == "resource")
+            if (pointedObject.transform.tag == global_const.resourcesTag)
             {
-                isRightClickOnResource = true;
+                rightClickCommand = selection_type.resource;
             }
-            else if (ray_mouse.secondRayHit.transform.tag == "enemy")
+            else if (pointedObject.transform.tag == global_const.wallTag)
             {
-                isRightClickOnEnemy = true;
+                if (Custom.DoesObjectHaveComponent<wall_test>(pointedObject))
+                {
+                    rightClickCommand = selection_type.wallNotFinished;
+                }
+
             }
+
+        print(pointedObject.name);
         }
+
     }
 
 

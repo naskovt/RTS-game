@@ -9,7 +9,7 @@ public class wall_test : MonoBehaviour {
     /// <summary>
     /// /----------------------------------------------------------make it false when script is ready!!!!!!!!!!!!!!!!!
     /// </summary>
-    private static bool isUnitBuildingIt = true;
+    private static bool isUnitBuildingIt = false;
 
     private static int wallHeight = 4;
 
