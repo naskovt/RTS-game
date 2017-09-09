@@ -7,5 +7,6 @@ public enum resources : byte
     food = 1,
     wood = 2,
     stone = 3,
-    population = 4
+    population = 4,
+    supplies = 5,
 }

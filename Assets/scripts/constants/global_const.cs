@@ -14,4 +14,6 @@ public static class global_const {
 
     public static int zombieBonusDamage = 30;
 
+    public static float playerWidth = 1f;
+
 }

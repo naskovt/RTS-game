@@ -61,73 +61,73 @@ public class selection_manager : MonoBehaviour
         //{
 
 
-            #region save the position of the first left mouse click and the raycast hit
-            if (Input.GetMouseButtonDown(0))
+        #region save the position of the first left mouse click and the raycast hit
+        if (Input.GetMouseButtonDown(0))
+        {
+            firstPoint = Input.mousePosition;
+            firstRayHit = RayHitFromMousePos(firstPoint);
+        }
+        #endregion
+
+        #region if left mouse button is held down
+        if (Input.GetMouseButton(0))
+        {
+            #region save the second mouse click and raycast hit
+            secondPoint = Input.mousePosition;
+            secondRayHit = RayHitFromMousePos(secondPoint);
+            #endregion
+
+            #region check is the lasso slecection active or the one click
+
+            if (differenceBetween2DVectors(firstPoint, secondPoint) > differenceBetweenClickAndDrag)
             {
-                firstPoint = Input.mousePosition;
-                firstRayHit = RayHitFromMousePos(firstPoint);
+                isLasoSelectionThisFrame = true;
+            }
+            else
+            {
+                isLasoSelectionThisFrame = false;
             }
             #endregion
 
-            #region if left mouse button is held down
-            if (Input.GetMouseButton(0))
+            #region activate the laso selection
+            //change later, son! is the selection raycast hit gonna be outside the map?
+            if (firstRayHit.point != Vector3.zero && secondRayHit.point != Vector3.zero && isLasoSelectionThisFrame)
             {
-                #region save the second mouse click and raycast hit
-                secondPoint = Input.mousePosition;
-                secondRayHit = RayHitFromMousePos(secondPoint);
-                #endregion
-
-                #region check is the lasso slecection active or the one click
-
-                if (differenceBetween2DVectors(firstPoint, secondPoint) > differenceBetweenClickAndDrag)
-                {
-                    isLasoSelectionThisFrame = true;
-                }
-                else
-                {
-                    isLasoSelectionThisFrame = false;
-                }
-                #endregion
-
-                #region activate the laso selection
-                //change later, son! is the selection raycast hit gonna be outside the map?
-                if (firstRayHit.point != Vector3.zero && secondRayHit.point != Vector3.zero && isLasoSelectionThisFrame)
-                {
-                    //notice passing the Vector3 x and z to Vector2 x and y
-                    SelectObjectsBetween(new Vector2(firstRayHit.point.x, firstRayHit.point.z),
-                        new Vector2(secondRayHit.point.x, secondRayHit.point.z));
-                }
-                #endregion
-
-            }
-            #endregion
-            ////////good
-            #endregion
-
-            #region Single left click handling for selecting objects
-
-            if (Input.GetMouseButtonDown(0) && !isLasoSelectionThisFrame)
-            {
-                RaycastHit hit;
-                Ray cameraRay = cam.ScreenPointToRay(Input.mousePosition);
-
-                if (Physics.Raycast(cameraRay, out hit, 10000f, rayLayer))
-                {
-                    SelectionManagerOneClick(cameraRay, hit);
-                }
+                //notice passing the Vector3 x and z to Vector2 x and y
+                SelectObjectsBetween(new Vector2(firstRayHit.point.x, firstRayHit.point.z),
+                    new Vector2(secondRayHit.point.x, secondRayHit.point.z));
             }
             #endregion
 
-            #region right click movement
-            if (Input.GetMouseButtonDown(1) == true && !Input.GetKey(KeyCode.LeftAlt))
-            {
-                Vector2 mousePos = Input.mousePosition;
-                Vector3 pointedSpotToMove;
+        }
+        #endregion
+        ////////good
+        #endregion
 
-                pointedSpotToMove = RayHitFromMousePos(mousePos).point;
-                DecideToMoveObject(pointedSpotToMove);
+        #region Single left click handling for selecting objects
+
+        if (Input.GetMouseButtonDown(0) && !isLasoSelectionThisFrame)
+        {
+            RaycastHit hit;
+            Ray cameraRay = cam.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(cameraRay, out hit, 10000f, rayLayer))
+            {
+                SelectionManagerOneClick(cameraRay, hit);
             }
-            #endregion
+        }
+        #endregion
+
+        #region right click movement
+        if (Input.GetMouseButtonDown(1) == true && !Input.GetKey(KeyCode.LeftAlt))
+        {
+            Vector2 mousePos = Input.mousePosition;
+            Vector3 pointedSpotToMove;
+
+            pointedSpotToMove = RayHitFromMousePos(mousePos).point;
+            DecideToMoveObject(pointedSpotToMove);
+        }
+        #endregion
 
         //}
         //#region activate UI info if objects are selected
@@ -137,7 +137,7 @@ public class selection_manager : MonoBehaviour
         //}
         //#endregion
 
-        //PrintArray();
+        PrintArray();
         //ui_selection.PrintNames(selectedObjects);
         //print(selectableObjectsInScene.Length);
     }

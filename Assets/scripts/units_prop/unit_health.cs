@@ -1,21 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class unit_health : MonoBehaviour {
 
-    private unit_prop uniPropScript;
     public string enemyTagToAttack = "enemy";
 
+    private unit_prop uniPropScript;
     private float damageUnitFromBullet = 2;
     private float damageUnitFromMalee = 10;
 
-
+    //health
+    internal bool isSelected = false;
 
     private void Start()
     {
         uniPropScript = GetComponent<unit_prop>();
     }
+
+
     
 
     private void OnCollisionEnter(Collision collision)

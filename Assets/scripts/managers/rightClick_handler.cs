@@ -37,7 +37,7 @@ public class rightClick_handler : MonoBehaviour {
 
             }
 
-        print(pointedObject.name);
+        //print(pointedObject.name);
         }
 
     }
