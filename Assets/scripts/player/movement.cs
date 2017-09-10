@@ -2,25 +2,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.AI;
 
 public class movement : MonoBehaviour {
 
-    public GameObject markerForAiming;
+    public Image selectionIndicator;
     internal bool isShooting = false;
+    internal bool isSelected = false;
 
     private unit_sense unitSense;
     private Rigidbody rb;
-    private bool isTargetOnPlace = true;
+    private bool isMoving = true;
     private Vector3 targetPointToAttack;
     private Vector3 targetPointToMove;
     private NavMeshAgent navAgent;
-    private float deviationRadius = 1f;
     private string enemyTagToAttack = "enemy";
     private Transform eyesTransform;
     private GameObject gun;
-    private float unitWidth = 2;
 
+        float a;
     //animation
     private Animator animator;
     //private bool isMoving = false;
@@ -33,12 +34,12 @@ public class movement : MonoBehaviour {
         eyesTransform = Custom.findChildWithTag(gameObject,"eyes").transform;
         gun = Custom.findChildWithTag(gameObject, "gun");
         animator = GetComponent<Animator>();
+        targetPointToMove = transform.position;
+
     }
 
     private void Update()
     {
-
-
         #region attack
 
 
@@ -68,42 +69,51 @@ public class movement : MonoBehaviour {
         }
         #endregion
 
-
-
         #region movement
 
-
         //if player is not on his place
-        if (Vector3.Distance(transform.position, targetPointToMove) > deviationRadius)
+        if (Vector3.Distance(transform.position, targetPointToMove) > global_const.deviationRadius + 1)
         {
-            isTargetOnPlace = false;
+            isMoving = true;
+            //print("move player");
         }
         else
         {
-            isTargetOnPlace = true;
+            //print("not movinf player");
+
+            isMoving = false;
         }
 
 
-
-        if (!isTargetOnPlace)
+        if (isMoving)
         {
-            //isMoving = true;
             navAgent.enabled = true;
             navAgent.SetDestination(targetPointToMove);
         }
         else
         {
-            isTargetOnPlace = true;
-            //isMoving = false;
             navAgent.enabled = false;
         }
 
         #endregion
 
+        #region selection indicator
+
+        if (isSelected)
+        {
+            selectionIndicator.enabled = true;
+        }
+        else
+        {
+            selectionIndicator.enabled = false;
+        }
+        #endregion
+
         Animation();
 
-        //print("Moving: " + !isTargetOnPlace);
-
+        //testinggggggggggggggggggggggggggggggg
+        //print("Moving: " + isMoving);
+        //print(CalcDeviationRadius());
         //print("Shooting: " + isShooting);
     }
 
@@ -133,20 +143,15 @@ public class movement : MonoBehaviour {
 
     internal void moveSelectedObjectToPoint(Vector3 targetPointToMove)
     {
-        //define the target to move to and set is on place to false
-        //Decide to move or not - if object is far
+        //Decide to move or not - if object is further then one unit distance, move him
         if (Vector3.Distance( transform.position, targetPointToMove) > global_const.playerWidth)
         {
             this.targetPointToMove = targetPointToMove;
 
-            isTargetOnPlace = false;
+            isMoving = true;
 
-            deviationRadius = CalcDeviationRadius();
-
-            //print(targetPointToMove);
+            global_const.deviationRadius = CalcDeviationRadius();
         }
-
-
     }
     //
 
@@ -187,7 +192,8 @@ public class movement : MonoBehaviour {
 
         //animation
 
-        animator.SetBool("isMoving", !isTargetOnPlace);
+        animator.SetBool("isMoving", isMoving);
+
 
         animator.SetBool("isShooting", isShooting);
 

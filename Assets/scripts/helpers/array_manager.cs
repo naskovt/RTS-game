@@ -22,7 +22,8 @@ public class array_manager : MonoBehaviour {
     //add obj in array
     public static void addObjInArray(GameObject obj, GameObject[] arr)
     {
-        if (!IsArrayFull(arr))
+
+        if (!IsArrayFull(arr) && arr!= null && obj!=null)
         {
             arr[EmptyPosInArray(arr)] = obj;
         }
@@ -45,7 +46,8 @@ public class array_manager : MonoBehaviour {
         }
         else
         {
-            throw new MissingReferenceException("The passed array is null!");
+            return false;
+            //throw new MissingReferenceException("The passed array is null!");
         }
     }
 
@@ -65,6 +67,10 @@ public class array_manager : MonoBehaviour {
     //find and return empty position in array
     public static byte EmptyPosInArray(GameObject[] arr)
     {
+
+        if (arr != null)
+        {
+
         for (int i = 0; i < arr.Length; i++)
         {
             if (arr[i] == null)
@@ -72,8 +78,9 @@ public class array_manager : MonoBehaviour {
                 return (byte)i;
             }
         }
-
-        throw new KeyNotFoundException("no such an object position in array");
+        }
+        return 0;
+        //throw new KeyNotFoundException("no such an object position in array");
     }
 
     //find and return object's position in array

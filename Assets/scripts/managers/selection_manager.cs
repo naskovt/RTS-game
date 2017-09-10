@@ -137,7 +137,7 @@ public class selection_manager : MonoBehaviour
         //}
         //#endregion
 
-        PrintArray();
+        //PrintArray();
         //ui_selection.PrintNames(selectedObjects);
         //print(selectableObjectsInScene.Length);
     }
@@ -192,7 +192,7 @@ public class selection_manager : MonoBehaviour
             if (nextEmptyArrayPos < populationLimit)
             {
                 selectedObjects[nextEmptyArrayPos] = selectedObj;
-                HighlightSelection(selectedObj);
+                HighlightSelectionIndicator(selectedObj);
                 nextEmptyArrayPos++;
             }
             else
@@ -300,7 +300,7 @@ public class selection_manager : MonoBehaviour
     private void ClearSelection()
     {
         //first dehighlight, cause the fucn uses the selected obj!
-        DehighlightSelection();
+        DeHighlightSelectionIndicator();
         selectedObjects = new GameObject[populationLimit];
         nextEmptyArrayPos = 0;
     }
@@ -317,20 +317,27 @@ public class selection_manager : MonoBehaviour
         return true;
     }
 
-    private void HighlightSelection(GameObject obj)
+    private void HighlightSelectionIndicator(GameObject obj)
     {
-        obj.GetComponent<Renderer>().material = selectionMaterial;
+        obj.GetComponent<movement>().isSelected = true;
+        //obj.GetComponent<Renderer>().material = selectionMaterial;
     }
 
-    private void DehighlightSelection()
+    private void DeHighlightSelectionIndicator()
     {
-        selectedObjects.DoForEach(AssingPlayerMat, nextEmptyArrayPos);
+        selectedObjects.DoForEach(DisableSelectionIndicator, nextEmptyArrayPos);
         nextEmptyArrayPos = 0;
     }
 
-    private void AssingPlayerMat(GameObject obj)
+    private void DisableSelectionIndicator(GameObject obj)
     {
-        obj.GetComponent<Renderer>().material = playerMaterial;
+        if (obj != null)
+        {
+
+        obj.GetComponent<movement>().isSelected = false;
+
+        }
+        //obj.GetComponent<Renderer>().material = playerMaterial;
     }
 
     private void TestPrintAllSelObjects()

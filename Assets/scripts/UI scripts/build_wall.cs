@@ -53,7 +53,7 @@ public class build_wall : MonoBehaviour {
                     SpawnPlannedWall();
 
                     //enable the constructing method for the wall itself(if player is building it)
-                    wall.GetComponent<wall_test>().enabled = true;
+                    wall.GetComponentInChildren<wall_test>().enabled = true;
                 }
 
             }

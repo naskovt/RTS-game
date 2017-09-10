@@ -5,35 +5,23 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class unit_prop : MonoBehaviour {
+public class unit_prop : MonoBehaviour
+{
 
     public Image greenBar;
 
     private float health = 100;
-    private units_type type = units_type.peasant;
-
-    //resources
-    private gather_resources gatheringAgent;
-    private resources gatheredType = 0;
 
     //enemy
-    private string playerTagsInGame = "Player";
     private unit_sense sense;
 
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         sense = GetComponent<unit_sense>();
     }
-	
-	// Update is called once per frame
-	void Update () {
 
-        if (gatheredType != resources.none)
-        {
-            gather_resources.StartGathering(gatheredType);
-        }
-	}
 
     internal void modulateGUIBar()
     {
@@ -45,57 +33,29 @@ public class unit_prop : MonoBehaviour {
         }
     }
 
-    internal void UpgradeHealth(float upgrade)
-    {
-        this.health += upgrade;
-        modulateGUIBar();
-    }
-
     internal void TakeDamage(float damage)
     {
+        this.health -= damage;
+
         if (health <= 0)
         {
             UnitDies();
         }
         else
         {
-            this.health -= damage;
             modulateGUIBar();
         }
     }
 
     internal void UnitDies()
     {
-        //if (transform.tag == playerTagsInGame && selection_manager.IsSameObjectSelected(gameObject))
-        //{
-        //    print("selected object dies");
-        //}
-        gameObject.SetActive(false);
+        //check to what kind of unit, the script is attached
+        if (gameObject.tag == global_const.enemiesTag)
+        {
+            GetComponent<zombie_movement>().isDead = true;
+            resources_manager.courage++;
+        }
+
     }
-
-    /// Collision listening functions
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.collider.tag == "resource")
-        {
-            gatheredType = collision.collider.gameObject.GetComponent<resource_info>().type;
-        }
-        else if (collision.collider.tag == "building")
-        {
-        }
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.collider.tag == "resource")
-        {
-            gatheredType = resources.none;
-        }
-        else if (collision.collider.tag == "building")
-        {
-        }
-    }
-
-
 }
+

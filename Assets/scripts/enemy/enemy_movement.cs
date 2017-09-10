@@ -11,7 +11,7 @@ public class enemy_movement : MonoBehaviour
     private Vector3 targetDirection;
     private Vector3 verticalVector;
     private Vector3 rotateVector;
-    private float minDistanceToMove = 3;
+    private float minDistanceToMove = 1;
     private float timeLapsed;
     private NavMeshAgent navAgent;
     private Rigidbody rb;
