@@ -1,0 +1,130 @@
+-debug
+-target:library
+-nowarn:0169
+-langversion:4
+-out:Temp/Assembly-CSharp.dll
+-unsafe
+-optimize
+-r:"D:/Program Files/Unity/Editor/Data/PlaybackEngines/windowsstandalonesupport/Managed/UnityEngine.dll"
+-r:"D:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/Standalone/UnityEngine.UI.dll"
+-r:"D:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Networking/Standalone/UnityEngine.Networking.dll"
+-define:UNITY_5_3_OR_NEWER
+-define:UNITY_5_4_OR_NEWER
+-define:UNITY_5_5_OR_NEWER
+-define:UNITY_5_6_OR_NEWER
+-define:UNITY_5_6_1
+-define:UNITY_5_6
+-define:UNITY_5
+-define:ENABLE_AUDIO
+-define:ENABLE_CACHING
+-define:ENABLE_CLOTH
+-define:ENABLE_DUCK_TYPING
+-define:ENABLE_GENERICS
+-define:ENABLE_PVR_GI
+-define:ENABLE_MICROPHONE
+-define:ENABLE_MULTIPLE_DISPLAYS
+-define:ENABLE_PHYSICS
+-define:ENABLE_RUNTIME_NAVMESH_BUILDING
+-define:ENABLE_SPRITERENDERER_FLIPPING
+-define:ENABLE_SPRITES
+-define:ENABLE_TERRAIN
+-define:ENABLE_RAKNET
+-define:ENABLE_UNET
+-define:ENABLE_LZMA
+-define:ENABLE_UNITYEVENTS
+-define:ENABLE_WEBCAM
+-define:ENABLE_WWW
+-define:ENABLE_CLOUD_SERVICES_COLLAB
+-define:ENABLE_CLOUD_SERVICES_ADS
+-define:ENABLE_CLOUD_HUB
+-define:ENABLE_CLOUD_PROJECT_ID
+-define:ENABLE_CLOUD_SERVICES_UNET
+-define:ENABLE_CLOUD_SERVICES_BUILD
+-define:ENABLE_CLOUD_LICENSE
+-define:ENABLE_EDITOR_METRICS
+-define:ENABLE_EDITOR_METRICS_CACHING
+-define:ENABLE_NATIVE_ARRAY
+-define:INCLUDE_DYNAMIC_GI
+-define:INCLUDE_GI
+-define:PLATFORM_SUPPORTS_MONO
+-define:RENDER_SOFTWARE_CURSOR
+-define:INCLUDE_PUBNUB
+-define:ENABLE_PLAYMODE_TESTS_RUNNER
+-define:ENABLE_SCRIPTING_NEW_CSHARP_COMPILER
+-define:ENABLE_VIDEO
+-define:UNITY_STANDALONE_WIN
+-define:UNITY_STANDALONE
+-define:ENABLE_SUBSTANCE
+-define:ENABLE_RUNTIME_GI
+-define:ENABLE_MOVIES
+-define:ENABLE_NETWORK
+-define:ENABLE_CRUNCH_TEXTURE_COMPRESSION
+-define:ENABLE_UNITYWEBREQUEST
+-define:ENABLE_CLOUD_SERVICES
+-define:ENABLE_CLOUD_SERVICES_ANALYTICS
+-define:ENABLE_CLOUD_SERVICES_PURCHASING
+-define:ENABLE_CLOUD_SERVICES_CRASH_REPORTING
+-define:ENABLE_EVENT_QUEUE
+-define:ENABLE_CLUSTERINPUT
+-define:ENABLE_VR
+-define:ENABLE_WEBSOCKET_HOST
+-define:ENABLE_MONO
+-define:NET_2_0_SUBSET
+"Assets/fps assets/Scripts/GameManager.cs"
+"Assets/fps assets/Scripts/Gun/Bullet_Movement.cs"
+"Assets/fps assets/Scripts/Gun/Enemy_gun.cs"
+"Assets/fps assets/Scripts/Gun/Gun_Fire.cs"
+"Assets/fps assets/Scripts/Gun/sleeve_destroy.cs"
+"Assets/fps assets/Scripts/UI/HUD_manager.cs"
+"Assets/fps assets/Scripts/gameplay/canvas_lookAt.cs"
+"Assets/scripts/UI scripts/build_wall.cs"
+"Assets/scripts/UI scripts/camera_movement.cs"
+"Assets/scripts/UI scripts/draw_rect2D.cs"
+"Assets/scripts/UI scripts/healthbar_selection.cs"
+"Assets/scripts/UI scripts/ingame_menu.cs"
+"Assets/scripts/UI scripts/main_menu.cs"
+"Assets/scripts/UI scripts/menu_navigation.cs"
+"Assets/scripts/UI scripts/pop_up_text.cs"
+"Assets/scripts/UI scripts/ui_selection.cs"
+Assets/scripts/buildings/main_base.cs
+Assets/scripts/buildings/player_creation.cs
+Assets/scripts/buildings/wall_build.cs
+Assets/scripts/buildings/wall_test.cs
+Assets/scripts/constants/global_const.cs
+Assets/scripts/enemy/attack_zombie.cs
+Assets/scripts/enemy/enemy_movement.cs
+Assets/scripts/enemy/enemy_sense.cs
+Assets/scripts/enemy/zombie_movement.cs
+Assets/scripts/enum_/resources_type.cs
+Assets/scripts/enum_/selection_type.cs
+Assets/scripts/enum_/units_type.cs
+Assets/scripts/extensions/Custom.cs
+Assets/scripts/extensions/extension_method.cs
+Assets/scripts/helpers/array_manager.cs
+Assets/scripts/helpers/mainBase_.cs
+Assets/scripts/helpers/objects_pool.cs
+Assets/scripts/helpers/ray_mouse.cs
+Assets/scripts/managers/loosing.cs
+Assets/scripts/managers/pointing_commands.cs
+Assets/scripts/managers/rightClick_handler.cs
+Assets/scripts/managers/selection_manager.cs
+Assets/scripts/managers/spawner_.cs
+Assets/scripts/player/movement.cs
+Assets/scripts/player/player_sense.cs
+Assets/scripts/player/zevolve_.cs
+Assets/scripts/resources/food_.cs
+Assets/scripts/resources/resource_info.cs
+Assets/scripts/resources/resources_manager.cs
+Assets/scripts/resources/trigger_coll.cs
+Assets/scripts/units_prop/NOTUSED_player_health.cs
+Assets/scripts/units_prop/ai_closestObj.cs
+Assets/scripts/units_prop/bar_lookAtCamera.cs
+Assets/scripts/units_prop/unit_health.cs
+Assets/scripts/units_prop/unit_prop.cs
+Assets/scripts/units_prop/unit_sense.cs
+-r:"D:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\System.Runtime.Serialization.dll"
+-r:"D:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\System.Xml.Linq.dll"
+-r:"D:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\UnityScript.dll"
+-r:"D:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\UnityScript.Lang.dll"
+-r:"D:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\Boo.Lang.dll"
+-sdk:unity

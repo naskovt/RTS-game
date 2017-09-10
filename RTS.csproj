@@ -107,13 +107,15 @@
     <Compile Include="Assets\scripts\enum_\selection_type.cs" />
     <Compile Include="Assets\scripts\enum_\units_type.cs" />
     <Compile Include="Assets\scripts\extensions\Custom.cs" />
-    <Compile Include="Assets\scripts\extensions\extension_method.cs" />
     <Compile Include="Assets\scripts\helpers\array_manager.cs" />
+    <Compile Include="Assets\scripts\helpers\mainBase_.cs" />
     <Compile Include="Assets\scripts\helpers\objects_pool.cs" />
     <Compile Include="Assets\scripts\helpers\ray_mouse.cs" />
+    <Compile Include="Assets\scripts\managers\loosing.cs" />
     <Compile Include="Assets\scripts\managers\pointing_commands.cs" />
     <Compile Include="Assets\scripts\managers\rightClick_handler.cs" />
     <Compile Include="Assets\scripts\managers\selection_manager.cs" />
+    <Compile Include="Assets\scripts\managers\spawner_.cs" />
     <Compile Include="Assets\scripts\player\movement.cs" />
     <Compile Include="Assets\scripts\player\player_sense.cs" />
     <Compile Include="Assets\scripts\player\zevolve_.cs" />

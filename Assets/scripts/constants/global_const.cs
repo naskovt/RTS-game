@@ -14,6 +14,9 @@ public static class global_const {
     public const string bulletsTag = "bullet";
     public const string sleeveTag = "sleeve";
 
+    public const float populationLimit = 99;
+
+
     public static int zombieBonusDamage = 30;
 
     public static float playerWidth = 0.5f;
@@ -34,6 +37,12 @@ public static class global_const {
 
     //surprising the player by transofrming the infected unit into a zombie(zevolving process) after a zombie touched him and the timer passes
     public static float zevolveTimer = 0.1f;
+
+    public static float spawnEnemiesEach = 1;
+
+
+
+    public static Vector3 mainBasePointOfDefeat = new Vector3(2.47f, 0.1f, -0.34f);
 
 }
 

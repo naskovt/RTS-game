@@ -6,7 +6,6 @@ using UnityEngine.AI;
 public class zombie_movement : MonoBehaviour {
 
     //assign from editor components
-    public GameObject mainPlayerBase;
     public GameObject markerForDestinationTest;
 
     internal bool isDead = false;
@@ -33,6 +32,10 @@ public class zombie_movement : MonoBehaviour {
     private Vector3 rotateVector;
     private float timeLapsed;
 
+    private float maxStuckTime = 2;
+    private float timer;
+    private Vector3 lastCheckedPos;
+
     void Start()
     {
         navAgent = GetComponent<NavMeshAgent>();
@@ -44,20 +47,18 @@ public class zombie_movement : MonoBehaviour {
 
     void Update()
     {
-        
         if (!isDead)
         {
 
-
             //if target in range ---> go and attack it
-            if (enemySense.isEnemyInRange)
+           if (enemySense.isEnemyInRange)
             {
                 targetDirection = enemySense.enemyPosition;
             }
             //else go and attack the main base
             else
             {
-                targetDirection = mainPlayerBase.transform.position;
+                targetDirection = global_const.mainBasePointOfDefeat;
             }
 
             ////-----------------------------------test------------------------------------------------//

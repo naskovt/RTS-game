@@ -325,8 +325,13 @@ public class selection_manager : MonoBehaviour
 
     private void DeHighlightSelectionIndicator()
     {
-        selectedObjects.DoForEach(DisableSelectionIndicator, nextEmptyArrayPos);
+        foreach (var item in selectedObjects)
+        {
+            DisableSelectionIndicator(item);
+        }
         nextEmptyArrayPos = 0;
+
+        //selectedObjects.DoForEach(DisableSelectionIndicator, nextEmptyArrayPos);
     }
 
     private void DisableSelectionIndicator(GameObject obj)

@@ -46,7 +46,7 @@ public class build_wall : MonoBehaviour {
                     InitializePlannedWall();
                 }
 
-                wall.transform.position = buildLocation;
+                wall.transform.position = buildLocation + new Vector3(0,0.3f,0);
 
                 if (Input.GetMouseButtonDown(0))
                 {

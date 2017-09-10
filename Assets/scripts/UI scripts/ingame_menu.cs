@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ingame_menu : MonoBehaviour {
 
     private bool isInMenu = false;
+
+    private SliderJoint2D sliderDiff;
 
     private Canvas mainMenu;
     private Canvas settingsMenu;
@@ -54,10 +57,14 @@ public class ingame_menu : MonoBehaviour {
     public void ExitGame()
     {
         Application.Quit();
-        UnityEditor.EditorApplication.isPlaying = false;
+        //UnityEditor.EditorApplication.isPlaying = false;
     }
 
 
+    public void ChangeDifficulty()
+    {
+        //global_const.damageUnitFromBullet = sliderDiff.;
+    }
 
     public void SettingsMenuSwitch()
     {
